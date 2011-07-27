@@ -18,6 +18,8 @@ class NgramDao():
         for i in range(len(words)):
             if words[i] in models[-1]:
                 models.append(models[-1][words[i]])
+        if self.dampening == None:
+            models = [models[-1]]
         return models
     
     def map_frequencies(self, model, factor=1):

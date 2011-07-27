@@ -6,7 +6,7 @@ class TweetIterator():
         self.path = path
     
     def __iter__(self):
-        self.f = open("/Users/simon/Documents/git/TweetNgrams/data/tweets.txt")
+        self.f = open(self.path)
         return self
     
     def next(self):

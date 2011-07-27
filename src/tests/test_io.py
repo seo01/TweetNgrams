@@ -9,7 +9,8 @@ class GetFrequenciesTest(unittest.TestCase):
         self.assertEqual({'be': 202, 'evil': 10001, 'eval': 10001, "don't": 2},frequencies)
         frequencies = ngram_dao.get_frequencies(["don't"])
         self.assertEqual({'be': 202, 'evil': 1, 'eval': 1, "don't": 2},frequencies)
-        
+
+#TODO: Test normalised_document_dao
 
 if __name__ == "__main__":
     unittest.main()

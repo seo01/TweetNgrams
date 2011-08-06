@@ -1,4 +1,4 @@
-
+import json
 
 class NgramDao():
     
@@ -34,5 +34,13 @@ class NgramDao():
             frequencies1[token] = frequencies1.get(token,0)+frequency
         return frequencies1
 
+    def export_json(self, filehandler):
+        json.dump(self.model,filehandler)
+
+def import_ngram_dao(filehandler, **kw):
+    model = json.load(filehandler)
+    return NgramDao(model, **kw)
+    
+        
         
         

@@ -1,4 +1,4 @@
-
+import json
 
 class NormalisedDocumentDao():
     document_hashes = None
@@ -15,3 +15,12 @@ class NormalisedDocumentDao():
         
     def is_unique(self, tokens):
         return not self.hash_document(tokens) in self.document_hashes
+    
+    def export_hashes(self, fp):
+        json.dump(list(self.document_hashes),fp)
+    
+    def import_hashes(self, fp):
+        hashes = json.load(fp)
+        for h in hashes:
+            self.document_hashes.add(h)
+        

@@ -6,7 +6,7 @@ from io.tweet_iterator import TweetIterator
 from io.ngram_dao import NgramDao,import_ngram_dao
 from io.normalised_document_dao import NormalisedDocumentDao
 from io.document_publisher import DocumentPublisher, FilePublisher
-from processing.frequency_booster import FrequencyBooster
+from processing.frequency_booster import FrequencyBooster, RemoveStartTokens
 from processing.token_processor import TokenProcessor
 from processing.string_processor import StringProcessor
 from nlp.model_builder import ModelBuilder
@@ -15,8 +15,8 @@ from nlp.document_builder import DocumentBuilder
 def construct_model_builder(normalised_document_dao):
     return ModelBuilder(normalised_document_dao=normalised_document_dao,string_processor=StringProcessor(),token_processor=TokenProcessor())
 
-def construct_document_builder(ngram_dao,normalised_document_dao):
-    return DocumentBuilder(ngram_dao,normalised_document_dao=normalised_document_dao,string_processor=StringProcessor(),frequency_booster=FrequencyBooster(),token_processor=TokenProcessor())
+def construct_document_builder(ngram_dao,normalised_document_dao,frequency_booster):
+    return DocumentBuilder(ngram_dao,normalised_document_dao=normalised_document_dao,string_processor=StringProcessor(),frequency_booster=frequency_booster,token_processor=TokenProcessor())
 
 def get_parser():
     parser = OptionParser()
@@ -46,7 +46,9 @@ example: Read a model and hashes from file, write 10 documents to a new file and
     parser.add_option("-z","--exportdocumenthash",dest="exporthash",
                 help="The file to export document hashes to")
     parser.add_option("-w","--writedocument",dest="writedocument",
-                help="File to write documents to")        
+                help="File to write documents to") 
+    parser.add_option("-t","--tweetlength",dest="tweetlength",action="store_true",
+                help="Artificial limit document lengths for tweets")        
     return parser
 
 def get_options():
@@ -80,7 +82,8 @@ def main():
     if ngram_dao is None:
         raise Exception("Fatal Exception no model specified, option -i or -g required")
     if options.count:
-        document_builder = construct_document_builder(ngram_dao,normalised_document_dao)
+        frequency_booster=FrequencyBooster() if options.tweetlength else RemoveStartTokens()
+        document_builder = construct_document_builder(ngram_dao,normalised_document_dao,frequency_booster)
         document_publisher = None
         f = None
         if options.writedocument:
